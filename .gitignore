@@ -1,0 +1,4 @@
+.ChatTube
+backend/.env
+backend/__pycache__
+.github_token.txt

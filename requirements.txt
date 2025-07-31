@@ -1,0 +1,48 @@
+#LangChin Core
+langchain
+langchain-core
+langchain-community
+
+#OpenAI Integration
+langchain-openai
+openai
+
+#Anthropic Integration
+langchain-anthropic
+
+#google gemini (PaLM) Integration
+langchain-google-genai
+google-generativeai
+
+#Hugging Face Integration
+langchain-huggingface
+transformers
+huggingface-hub
+
+#Environment variable Management
+python-dotenv
+
+#Machine Learning Utilities
+numpy
+scikit-learn
+
+#database
+chromadb
+tiktoken
+langchain_pinecone
+pinecone-client
+pinecone-notebooks
+
+
+
+#others
+PyPDF
+fastapi
+uvicorn
+streamlit
+annotated-types
+pydantic-core
+typing-extensions
+grandalf
+beautifulsoup4
+huggingface_hub[hf_xet]
