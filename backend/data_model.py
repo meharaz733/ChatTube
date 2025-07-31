@@ -1,4 +1,4 @@
-"""This is pydantic data model. This model validate user data and model response data."""
+"""This is pydantic data model. This model validate user data and api response data."""
 
 from pydantic import (
     BaseModel,

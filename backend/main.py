@@ -21,4 +21,4 @@ async def root():
 async def chat(req_body: User_data):
     model_response = await model.ainvoke(req_body.user_query)
 
-    return Response_data(transcript = req_body.transcript, chat_history = model_response.content)
+    return Response_data(transcript = req_body.transcript, chat_history = [model_response.content])
