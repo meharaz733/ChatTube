@@ -19,6 +19,7 @@ async def root():
 
 @app.post('/chat', response_model=Response_data)
 async def chat(req_body: User_data):
+    print(req_body.chat_history)
     model_response = await model.ainvoke(req_body.user_query)
 
     return Response_data(transcript = req_body.transcript, chat_history = [model_response.content])
