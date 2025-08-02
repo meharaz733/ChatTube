@@ -53,20 +53,20 @@ class ChatMessage(BaseModel):
     type: Literal["system", "human", "ai"]
     data: Optional[Union[SystemMessageData, HumanMessageData, AIMessageData]] = None
 
-class User_data(BaseModel):
+class UserData(BaseModel):
     
     """This model validate user data."""
 
     video_url: Annotated[str, Field(..., description="Video url for chatting.")]
-    transcript: Annotated[str, Field(..., description="This variable hold video transcript.")]
+    transcript: Annotated[Optional[str], Field(default=None, description="This variable hold video transcript.")]
     user_query: Annotated[str, Field(..., description="This variable hold user query.")]
     chat_history: Annotated[Optional[List[ChatMessage]], Field(default=None, description="Chat history between user and AI model")]
 
 
-class Response_data(BaseModel):
+class ResponseData(BaseModel):
     
     """This model validate api response data."""
 
     video_url: Annotated[str, Field(..., description="the video url that provided by user.")]
-    transcript: Annotated[str, Field(..., description="User Video transcrit")]
+    transcript: Annotated[Optional[str], Field(default=None, description="User Video transcrit")]
     chat_history: Annotated[List[ChatMessage], Field(..., description="Chat history between user and AI model")]

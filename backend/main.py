@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from model_loader import load_model_
 from data_model import (   #pydantic model to validate client and api reponse data.
-    User_data,
-    Response_data,
-    ChatMessage,
-    AIMessageData
+    UserData,
+    ResponseData
 )
+from transcribeHelper import transcribeVideo
+
+
 load_dotenv()
 
 model = load_model_()
@@ -19,12 +20,13 @@ async def root():
     return {'message': "Server is running..."}
 
 
-@app.post('/chat', response_model=Response_data)
-async def chat(req_body: User_data):
-
-    print(req_body.video_url)
+@app.post('/chat', response_model=ResponseData)
+async def chat(req_body: UserData):
     
-    print(req_body.chat_history)
+    """This is Chat endpoint."""
+    
+    transcribe = transcribeVideo(video_url=req_body.video_url)
+    
     model_response = await model.ainvoke(req_body.user_query)
 
-    return Response_data(transcript = req_body.transcript, chat_history = [{'type':'ai', 'data':{'content':model_response.content}}])
+    return ResponseData(video_url = req_body.video_url, chat_history = [{'type':'ai', 'data':{'content':model_response.content}}])
