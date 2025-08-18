@@ -2,3 +2,7 @@
 backend/.env
 backend/__pycache__
 .github_token.txt
+
+backend/token.json
+backend/credentials.json
+backend/quickstart.py

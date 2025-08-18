@@ -14,6 +14,13 @@ from typing import (
 )
 
 
+class SessionIDData(BaseModel):
+
+    """This model validate session ID."""
+
+    sessionID: Annotated[str, Field(..., description="Session ID.")]
+
+
 class SystemMessageData(BaseModel):
     
     """This model check System Message Data."""

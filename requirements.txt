@@ -46,3 +46,10 @@ typing-extensions
 grandalf
 beautifulsoup4
 huggingface_hub[hf_xet]
+
+#following module used to extract text from yt video.
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+youtube-transcript-api==1.1.1 #latest version may raise an error... 
+pytube
