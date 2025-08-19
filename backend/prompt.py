@@ -7,6 +7,8 @@ from langchain_core.prompts import PromptTemplate
 from data_model import UserData
 
 
+
+
 def Prompt_template(data: UserData):
     """
     Takes user input as a User_data model (Pydantic) and returns a PromptTemplate.
@@ -20,6 +22,12 @@ def Prompt_template(data: UserData):
     )
 
     return prompt
+
+
+
+#####################################################
+# ##################################################
+# ################################################
 
 
 def PrompForStructDoc(transcript: str):
@@ -65,6 +73,8 @@ Instructions:
     promptTemplate = prompt.invoke({"transcript": transcript})
 
     return promptTemplate
+
+
 
 
 # x = input("transcript: ")

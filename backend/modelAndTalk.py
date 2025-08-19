@@ -14,3 +14,9 @@ def load_model_():
     )
 
     return ChatHuggingFace(llm = model_)
+
+model = load_model_()
+
+def talkWithChatModel(query):
+    model_response = model.invoke(query)
+    return model_response.content
