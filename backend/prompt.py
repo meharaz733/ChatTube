@@ -49,7 +49,7 @@ Instructions:
 
 4. Avoid Redundancy: Merge repeated points into one paragraph.
 
-5. Direct Start: Begin immediately with the first topic (no "Here’s the trimmed version...").
+5. Direct Start: Don't start with "Here’s the trimmed version", "Here is the trimmed version.", etc, start directly with title of paragraph...
 
 6. Search-Friendly Titles: Make titles descriptive and SEO-friendly that symantic search can be apply. (e.g., Career Challenges in Tech:).
 
