@@ -17,6 +17,6 @@ def load_model_():
 
 model = load_model_()
 
-def talkWithChatModel(query):
-    model_response = model.invoke(query)
+def talkWithChatModel(prompt):
+    model_response = model.invoke(prompt)
     return model_response.content

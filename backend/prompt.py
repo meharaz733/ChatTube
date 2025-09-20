@@ -1,28 +1,26 @@
 """
-Prompt template for chat model. It consists of a transcript, user query and chat history and returns a template ready to pass to the model.
-
+Make prompt to send the Chat model...
 """
 
-from langchain_core.prompts import PromptTemplate
-from data_model import UserData
+from langchain_core.prompts import (
+    PromptTemplate,
+    ChatPromptTemplate
+)
 
 
-
-
-def Prompt_template(data: UserData):
+def promptForChat(userChatHistory, query, relatedContent):
     """
-    Takes user input as a User_data model (Pydantic) and returns a PromptTemplate.
-
+    Takes user query, chat history, and query related content then returns a PromptTemplate.
     """
-    prompt = PromptTemplate(
-        template="""
-            
-        """,
-        input_variables=["query"],
-    )
 
+    systemMsg = [("system", "Let's you are a video comprehension assistant. Here're a chathistory(if available), query and user query related content that are collected from the video. Kindly response accurately as user want to know. If you haven't enough information in this prompt then simply ans, 'Insufficient context, please provide more details So I can ans your question'.")]
+    finalMsg = systemMsg + userChatHistory #systemMsg and userChatHistory are list of tuple, so finalMsg will be a list of tuple..
+    chatPrompt = ChatPromptTemplate(finalMsg + [("human", "Query: {query}\n\nContent:{content}")])
+    prompt = chatPrompt.invoke({
+                                   "query":query,
+                                   "content": relatedContent
+                               })    
     return prompt
-
 
 
 #####################################################
@@ -53,7 +51,7 @@ Instructions:
 
 2. Preserve Original Meaning: Never alter the speaker’s intent or add external content.
 
-3. Conciseness: Keep paragraphs under 1000 words. Split long topics into (Part 1), (Part 2), etc with same title.
+3. Conciseness: Keep paragraphs under 100 words. Split long topics into (Part 1), (Part 2), etc with same title.
 
 4. Avoid Redundancy: Merge repeated points into one paragraph.
 
@@ -73,8 +71,6 @@ Instructions:
     promptTemplate = prompt.invoke({"transcript": transcript})
 
     return promptTemplate
-
-
 
 
 # x = input("transcript: ")
