@@ -4,14 +4,19 @@ from data_model import (   #pydantic model to validate client and api reponse da
     ResponseData,
     SessionIDData
 )
-from makeItReadyForChat import MakeItReadyForChat
+from makeItReadyForChat import (
+    MakeItReadyForChat,
+    isVideoExist
+)
 from modelAndTalk import talkWithChatModel
 from chatHistory import ChatHistory
 from retrieve import RetrieveContentFromVectorStore
 from prompt import promptForChat
 import uuid
+from database import Database
 
 
+db = Database()
 app = FastAPI()
 
 
@@ -23,7 +28,6 @@ async def root():
 
 @app.post('/start', response_model=SessionIDData)
 async def getSessionID(video_url: str):
-
     """
     Generate a secure random session ID and perform preprocces for chat.
     
@@ -34,23 +38,34 @@ async def getSessionID(video_url: str):
         str: A secure session ID string.
     """
     sessionID = str(uuid.uuid4())
-    MakeItReadyForChat(video_url, sessionID)
-    return SessionIDData(sessionID = sessionID)
+    video_id = MakeItReadyForChat(video_url, sessionID, db.get_db_path())
+    
+    return SessionIDData(sessionID = sessionID, videoID = video_id)
 
 
 
 @app.post('/chat', response_model=ResponseData)
 async def chat(req_body: UserData):
-    
-    """This is Chat endpoint."""
+    """
+    Chat endpoint: retrieves context, builds prompt, gets LLM answer, saves chat history.
+    """
 
-    chat = ChatHistory(req_body.sessionID)
+    db_path = db.get_db_path()
+
+    chat = ChatHistory(req_body.sessionID, dbPath=db_path)
 
     #load previous chat...
     userChatHistory = chat.__loadMessage__(50) #last 50 messages
 
+    existSessionID = isVideoExist(req_body.videoID, dbPath=db_path)
+
+    session_id = req_body.sessionID
+    
+    if existSessionID: #If session ID is exist that's mean the video transcript is already stored in the vector store, 
+        session_id = existSessionID #use old session id to find existing collection for the vector store ##collection name set as session ID..
+        
     #retrieve related content of user query...
-    retrieval = RetrieveContentFromVectorStore(req_body.sessionID)
+    retrieval = RetrieveContentFromVectorStore(session_id)
     content = retrieval.get_content(req_body.user_query)
     
     #making prompt using user query, content and chat history...
@@ -62,4 +77,4 @@ async def chat(req_body: UserData):
     #store the chat...
     chat.__saveMessage__([("human", req_body.user_query),("ai", model_response)])
     
-    return ResponseData(sessionID = req_body.sessionID, aiAnswer = model_response)
+    return ResponseData(sessionID = req_body.sessionID, aiAnswer = model_response, videoID = req_body.videoID)
