@@ -8,12 +8,17 @@ from makeItReadyForChat import (
     MakeItReadyForChat,
     isVideoExist
 )
-from modelAndTalk import talkWithChatModel
+from modelAndTalk import _model
 from chatHistory import ChatHistory
-from retrieve import RetrieveContentFromVectorStore
+# from retrieve import RetrieveContentFromVectorStore
 from prompt import promptForChat
 import uuid
 from database import Database
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_chroma import Chroma
+import os
+from embed_fn import embedding
 
 
 db = Database()
@@ -57,22 +62,43 @@ async def chat(req_body: UserData):
     #load previous chat...
     userChatHistory = chat.__loadMessage__(50) #last 50 messages
 
-    existSessionID = isVideoExist(req_body.videoID, dbPath=db_path)
-
     session_id = req_body.sessionID
+
+    existSessionID = isVideoExist(req_body.videoID, dbPath=db_path)
     
     if existSessionID: #If session ID is exist that's mean the video transcript is already stored in the vector store, 
-        session_id = existSessionID #use old session id to find existing collection for the vector store ##collection name set as session ID..
-        
-    #retrieve related content of user query...
-    retrieval = RetrieveContentFromVectorStore(session_id)
-    content = retrieval.get_content(req_body.user_query)
-    
-    #making prompt using user query, content and chat history...
-    prompt = promptForChat(userChatHistory, req_body.user_query, content)
+        session_id = existSessionID #use old session id to find existing collection for user query ##collection name set as session ID..
+
+    try:
+        vectorStore = Chroma(
+            collection_name=session_id,
+            embedding_function=embedding,
+            chroma_cloud_api_key=os.getenv("CHROMA_API_KEY"),
+            tenant=os.getenv("CHROMA_TENANT"),
+            database=os.getenv("CHROMA_DATABASE")
+        )
+    except Exception as e:
+        return ResponseData(
+            sessionID = req_body.sessionID,
+            aiAnswer = "ERROR: Connenction error",
+            videoID = req_body.videoID
+        )
+    chatPrompt = promptForChat(userChatHistory)
+    questionAndAnswerChain = create_stuff_documents_chain(
+        llm=_model,
+        prompt=chatPrompt
+    )
+    chain = create_retrieval_chain(
+        vectorStore.as_retriever(),
+        questionAndAnswerChain
+    )
 
     #send to llm(chatmodel)...
-    model_response = talkWithChatModel(prompt)
+    try:
+        model_response = chain.invoke({'query': req_body.user_query}).content
+    except Exception as e:
+        print(f"ERROR: {e}")
+        model_response = "Sorry, I couldn't generate a respones at the moment."
 
     #store the chat...
     chat.__saveMessage__([("human", req_body.user_query),("ai", model_response)])

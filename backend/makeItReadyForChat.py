@@ -1,8 +1,8 @@
 """MakeItReadyForChat, complete the nessesary step to make chat more reliable."""
 
-from prompt import PrompForStructDoc
+# from prompt import PrompForStructDoc
 from transcribeHelper import transcribeVideo
-from modelAndTalk import talkWithChatModel
+# from modelAndTalk import talkWithChatModel
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from embed_fn import embedding
@@ -27,14 +27,13 @@ def isVideoExist(videoID:str, dbPath:str):
             (videoID,)
         )
         existSessionID = cursor.fetchone()
-        conn.commit()
         conn.close()
-        return existSessionID[0]
+        return existSessionID[0] if existSessionID else None
     except Exception as e:
         print(f"Error: {e}")
         return None
 
-def saveTheVideo(videoID:str, dbPath:str, sesssionID:str):
+def saveTheVideo(videoID:str, dbPath:str, sessionID:str):
     try:
         conn = sqlite3.connect(dbPath)
         cursor = conn.cursor()
@@ -42,12 +41,12 @@ def saveTheVideo(videoID:str, dbPath:str, sesssionID:str):
             """
             INSERT INTO videoInfo (videoID, sessionID) VALUES (?, ?)
             """,
-            (videoID, sesssionID)
+            (videoID, sessionID)
         )
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"WARNING: unable to save the video info\nERROR: {e}")
 
 
 def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
@@ -63,19 +62,19 @@ def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
     
     #get transcript
     transcript = transcribeVideo(video_url=video_url)
-    
+
     #make a promptTemplate
-    prompt = PrompForStructDoc(transcript)
+    # prompt = PrompForStructDoc(transcript)
     
     #make the transcript structured doc with NLP model...
-    doc = talkWithChatModel(prompt)
+    # doc = talkWithChatModel(prompt)
     
     #Splitting the doc...
     textSplitter = RecursiveCharacterTextSplitter(
-        chunk_size=2500,
-        chunk_overlap=50
+        chunk_size=2000,
+        chunk_overlap=100
     )
-    texts = textSplitter.split_text(doc)
+    texts = textSplitter.split_text(transcript)
 
     # print(len(texts))
 

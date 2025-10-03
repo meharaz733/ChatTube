@@ -25,7 +25,7 @@ class ChatHistory:
 
     def __loadMessage__(self, k):
         """
-        Retrieve chat history from the db and return a it as list of dictionaries.
+        Retrieve chat history from the db and return a it as list of tuples.
         """
         
         conn = sqlite3.connect(self.dbPath)

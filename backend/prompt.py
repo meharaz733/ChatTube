@@ -6,21 +6,22 @@ from langchain_core.prompts import (
     PromptTemplate,
     ChatPromptTemplate
 )
+from typing import List, Tuple
 
 
-def promptForChat(userChatHistory, query, relatedContent):
+def promptForChat(userChatHistory: List[Tuple[str, str]]):
     """
     Takes user query, chat history, and query related content then returns a PromptTemplate.
     """
 
-    systemMsg = [("system", "Let's you are a video comprehension assistant. Here're a chathistory(if available), query and user query related content that are collected from the video. Kindly response accurately as user want to know. If you haven't enough information in this prompt then simply ans, 'Insufficient context, please provide more details So I can ans your question'.")]
+    systemMsg = [("system", "Use the given context to answer the question. If you don't know the answer, say you don't know. Use four sentence maximum and keep the answer concise.\nContext:{context}")]
     finalMsg = systemMsg + userChatHistory #systemMsg and userChatHistory are list of tuple, so finalMsg will be a list of tuple..
-    chatPrompt = ChatPromptTemplate(finalMsg + [("human", "Query: {query}\n\nContent:{content}")])
-    prompt = chatPrompt.invoke({
-                                   "query":query,
-                                   "content": relatedContent
-                               })    
-    return prompt
+    chatPrompt = ChatPromptTemplate.from_messages(finalMsg + [("human", "{query}")])
+    # prompt = chatPrompt.invoke({
+                                   # "query":query,
+                                   # "context": relatedContent
+                               # })    
+    return chatPrompt
 
 
 #####################################################
