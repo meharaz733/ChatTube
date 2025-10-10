@@ -17,9 +17,13 @@ from database import Database
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_chroma import Chroma
+from dotenv import load_dotenv
 import os
 from embed_fn import embedding
+import langchain
 
+langchain.debug = True
+load_dotenv()
 
 db = Database()
 app = FastAPI()
@@ -84,6 +88,7 @@ async def chat(req_body: UserData):
             videoID = req_body.videoID
         )
     chatPrompt = promptForChat(userChatHistory)
+    
     questionAndAnswerChain = create_stuff_documents_chain(
         llm=_model,
         prompt=chatPrompt
@@ -95,12 +100,12 @@ async def chat(req_body: UserData):
 
     #send to llm(chatmodel)...
     try:
-        model_response = chain.invoke({'query': req_body.user_query}).content
+        model_response = chain.invoke({'input': req_body.user_query})["answer"]
     except Exception as e:
         print(f"ERROR: {e}")
         model_response = "Sorry, I couldn't generate a respones at the moment."
 
-    #store the chat...
+    # store the chat...
     chat.__saveMessage__([("human", req_body.user_query),("ai", model_response)])
     
     return ResponseData(sessionID = req_body.sessionID, aiAnswer = model_response, videoID = req_body.videoID)

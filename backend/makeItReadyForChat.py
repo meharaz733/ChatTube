@@ -1,4 +1,4 @@
-"""MakeItReadyForChat, complete the nessesary step to make chat more reliable."""
+"""MakeItReadyForChat, omplete the nessesary step to make chat more reliable."""
 
 # from prompt import PrompForStructDoc
 from transcribeHelper import transcribeVideo
@@ -51,7 +51,10 @@ def saveTheVideo(videoID:str, dbPath:str, sessionID:str):
 
 def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
 
+    # print(f"sessionID : {sessionID}\nvideo_url: {video_url}\ndb_path: {dbPath}")
+
     videoID = getVideoID(video_url)
+    
     
     #check is the video script already exist in vector db...
     existSessionID = isVideoExist(videoID, dbPath)
@@ -62,6 +65,8 @@ def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
     
     #get transcript
     transcript = transcribeVideo(video_url=video_url)
+
+    # print(f"Transcript: {transcript}")
 
     #make a promptTemplate
     # prompt = PrompForStructDoc(transcript)
@@ -77,9 +82,12 @@ def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
     texts = textSplitter.split_text(transcript)
 
     # print(len(texts))
-
+    # print(texts)
     
     #initialize vector store...
+    # print(os.getenv("CHROMA_API_KEY"))
+    # print(os.getenv("CHROMA_TENANT"))
+    # print(os.getenv("CHROMA_DATABASE"))
     vectorStore = Chroma(
         collection_name=sessionID,
         embedding_function=embedding,
