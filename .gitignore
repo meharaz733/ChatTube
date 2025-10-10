@@ -11,3 +11,7 @@ backend/test
 
 #db file
 *.db
+
+
+#frontend
+node_modules/

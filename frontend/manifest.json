@@ -1,6 +1,6 @@
 {
-  "name": "Hello Extensions of the world!",
-  "description": "Base Level Extension",
+  "name": "ChatTube",
+  "description": "ChatTube is a browser extension that allows users to chat with an AI about the YouTube video they're currently watching.",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
