@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from data_model import (   #pydantic model to validate client and api reponse data.
     UserData,
     ResponseData,
-    SessionIDData
+    SessionIDData,
+    startdata
 )
 from makeItReadyForChat import (
     MakeItReadyForChat,
@@ -36,7 +37,7 @@ async def root():
 
 
 @app.post('/start', response_model=SessionIDData)
-async def getSessionID(video_url: str):
+async def getSessionID(video_url: startdata):
     """
     Generate a secure random session ID and perform preprocces for chat.
     
