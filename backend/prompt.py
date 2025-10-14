@@ -26,9 +26,12 @@ Core Instructions:
 
 Important Constraints:
 - Never invent information beyond the provided context,
-- Maintain focus on the video content and the user's specific questions.\n\nContext:{context}\n""")]
+- Maintain focus on the video content and the user's specific questions.""")]
 
-    finalMsg = systemMsg + userChatHistory #systemMsg and userChatHistory are list of tuple, so finalMsg will be a list of tuple..
+    context = [("human", "Context:{context}")]
+    
+    #systemMsg, userChatHistory, context are list of tuple, so finalMsg will be a list of tuple..
+    finalMsg = systemMsg + userChatHistory + context
     chatPrompt = ChatPromptTemplate.from_messages(finalMsg + [("human", "{input}")])
     
     return chatPrompt

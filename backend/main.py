@@ -47,6 +47,8 @@ async def getSessionID(video_url: startdata):
     Returns:
         str: A secure session ID string.
     """
+
+    print(startdata.video_url)
     sessionID = str(uuid.uuid4())
     video_id = MakeItReadyForChat(video_url, sessionID, db.get_db_path())
     
