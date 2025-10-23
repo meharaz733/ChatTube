@@ -1,81 +1,30 @@
 <!DOCTYPE html>
-
 <html>
   <head>
-    <style>
-      body{
-        width: 400px;
-        height: 500px;
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-        background: #f5f5f5;
-      }
-      
-      #chat-container {
-        flex: 1;
-        padding: 10px;
-        overflow-y: auto;
-        background: white;
-        border-bottom: 10px solid #ccc;
-      }
-      .message {
-        margin: 6px 0;
-        padding: 8px 12px;
-        border-radius: 10px;
-        max-width: 80%;
-      }
-      .user {
-        background: #007bff;
-        color: white;
-        align-self: flex-end;
-      }
-      .ai {
-        background: #e5e5ea;
-        color: black;
-        align-self: flex-start;
-      }
-
-      #input-area {
-        display: flex;
-        padding: 10px;
-        background: #fff;
-      }
-
-      #message-input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 20px;
-        outline: none;
-      }
-
-      #send-btn {
-        margin-left: 8px;
-        padding: 8px 12px;
-        border: none;
-        background: #007bff;
-        color: white;
-        border-radius: 20px;
-        cursor: pointer;
-      }
-
-      #send-btn:hover {
-        background: #0056b3;
-      }
-    </style>
+    <meta charset="UTF-8">
+    <title>ChatTube</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
+    <p id="note1" class="notice"> 
+      <span class="note-header"> <strong>Welcome to ChatTube!</strong><br><br></span>
+      You can chat with an AI about the YouTube video you're currently watching.<br>
+      Click <strong>Start</strong> to begin.<br><br>
+      <span class="note-text"> <strong>Note:</strong> ChatTube only works when you're watching a YouTube video.<br>
+      Your chat history will be lost if you refresh the page or open a new video.</span>
+    </p>
+
     <div id="start">
-      <button id="start-btn"> Start</button>
+      <button id="start-btn">Start</button>
     </div>
     
-    <div id="chat-container" style="display: none; flex-direction:column; height: 400px; overflow-y: auto;"></div>
+    <div id="chat-container" style="display: none; flex-direction: column; height: 400px; overflow-y: auto;"></div>
 
-    <div id="input-area" style="display:none;">
+    <div id="input-area" style="display: none;">
       <input id="message-input" type="text" placeholder="Ask your questions..." />
       <button id="send-btn">Send</button>
     </div>
+
     <script src="popup.js"></script>
   </body>
 </html>

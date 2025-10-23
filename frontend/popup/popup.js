@@ -4,6 +4,7 @@ const sendBtn = document.getElementById("send-btn");
 const startBtn = document.getElementById("start-btn");
 const startContainer = document.getElementById("start");
 const inputArea = document.getElementById("input-area");
+const guideMsg = document.getElementById("note1");
 
 let sessionID = null
 let videoID = null
@@ -22,6 +23,12 @@ startBtn.addEventListener("click", async () => {
     currentWindow: true
   });
   const video_url = tab.url;
+
+  if (!video_url.includes("youtube.com/watch")) {
+      alert("Please open a YouTube video to use ChatTube!");
+      return;
+    }
+  
   console.log(video_url)
   try{
     const response = await fetch(
@@ -39,8 +46,10 @@ startBtn.addEventListener("click", async () => {
     videoID = data.videoID;
 
     startContainer.style.display = "none";
+    guideMsg.style.display = "none";
     chatContainer.style.display = "flex";
     inputArea.style.display = "flex";
+    console.log("HERE>>>>")
   }
   catch (error){
     console.log("Error: " + error.message)

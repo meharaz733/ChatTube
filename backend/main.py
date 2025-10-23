@@ -17,6 +17,7 @@ import uuid
 from database import Database
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
 import os
@@ -29,6 +30,14 @@ load_dotenv()
 db = Database()
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["chrome-extension://jgkalpoemkbkooalhmiinabmcieekkcj"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 
 @app.get('/')
 async def root():
@@ -37,7 +46,7 @@ async def root():
 
 
 @app.post('/start', response_model=SessionIDData)
-async def getSessionID(video_url: startdata):
+async def getSessionID(data: startdata):
     """
     Generate a secure random session ID and perform preprocces for chat.
     
@@ -48,9 +57,9 @@ async def getSessionID(video_url: startdata):
         str: A secure session ID string.
     """
 
-    print(startdata.video_url)
+    print(data.video_url)
     sessionID = str(uuid.uuid4())
-    video_id = MakeItReadyForChat(video_url, sessionID, db.get_db_path())
+    video_id = MakeItReadyForChat(data.video_url, sessionID, db.get_db_path())
     
     return SessionIDData(sessionID = sessionID, videoID = video_id)
 

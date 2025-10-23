@@ -13,6 +13,7 @@ def transcribeVideo(video_url: str):
     loader = YoutubeLoader.from_youtube_url(
         youtube_url=video_url,
         # add_video_info=True,
+        language=["en", "en-US", "bn", "hi"],
         transcript_format=TranscriptFormat.CHUNKS,
         # chunk_size_seconds=30,
     )

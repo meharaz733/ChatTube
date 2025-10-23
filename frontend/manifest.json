@@ -3,6 +3,13 @@
   "description": "ChatTube is a browser extension that allows users to chat with an AI about the YouTube video they're currently watching.",
   "version": "1.0",
   "manifest_version": 3,
+  "permissions":[
+    "tabs",
+    "activeTab"
+  ],
+  "host_permissions":[
+    "https://*.youtube.com/*"
+  ],
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": "images/hello_extensions.png"
