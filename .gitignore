@@ -8,6 +8,7 @@ backend/credentials.json
 backend/quickstart.py
 backend/=0.1.2
 backend/test
+*.pyc
 
 #db file
 *.db

@@ -1,7 +1,7 @@
 
 import sqlite3
 
-DATABASE_PATH = "chattube.db"
+DATABASE_PATH = "Database/chatTube.db"
 
 class Database:
     def __init__(self):

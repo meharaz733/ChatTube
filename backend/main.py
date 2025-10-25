@@ -1,27 +1,27 @@
 from fastapi import FastAPI
-from data_model import (   #pydantic model to validate client and api reponse data.
+from Schema.data_model import (   #pydantic model to validate client and api reponse data.
     UserData,
     ResponseData,
     SessionIDData,
     startdata
 )
-from makeItReadyForChat import (
+from Utils.makeItReadyForChat import (
     MakeItReadyForChat,
     isVideoExist
 )
-from modelAndTalk import _model
-from chatHistory import ChatHistory
+from Model.modelAndTalk import _model
+from Utils.chatHistory import ChatHistory
 # from retrieve import RetrieveContentFromVectorStore
-from prompt import promptForChat
+from Utils.prompt import promptForChat
 import uuid
-from database import Database
+from Database.database import Database
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
 import os
-from embed_fn import embedding
+from Model.embed_fn import embedding
 import langchain
 
 langchain.debug = True

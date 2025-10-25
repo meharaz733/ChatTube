@@ -1,11 +1,11 @@
 """MakeItReadyForChat, omplete the nessesary step to make chat more reliable."""
 
 # from prompt import PrompForStructDoc
-from transcribeHelper import transcribeVideo
+from .transcribeHelper import transcribeVideo
 # from modelAndTalk import talkWithChatModel
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
-from embed_fn import embedding
+from Model.embed_fn import embedding
 import sqlite3
 import os
 
@@ -51,43 +51,24 @@ def saveTheVideo(videoID:str, dbPath:str, sessionID:str):
 
 def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
 
-    # print(f"sessionID : {sessionID}\nvideo_url: {video_url}\ndb_path: {dbPath}")
-
     videoID = getVideoID(video_url)
-    
-    
-    #check is the video script already exist in vector db...
     existSessionID = isVideoExist(videoID, dbPath)
     
     if existSessionID:
         print("The video already exist in database...")
         return videoID
     
-    #get transcript
     transcript = transcribeVideo(video_url=video_url)
 
-    # print(f"Transcript: {transcript}")
-
-    #make a promptTemplate
     # prompt = PrompForStructDoc(transcript)
-    
-    #make the transcript structured doc with NLP model...
     # doc = talkWithChatModel(prompt)
     
-    #Splitting the doc...
     textSplitter = RecursiveCharacterTextSplitter(
         chunk_size=2000,
         chunk_overlap=100
     )
     texts = textSplitter.split_text(transcript)
 
-    # print(len(texts))
-    # print(texts)
-    
-    #initialize vector store...
-    # print(os.getenv("CHROMA_API_KEY"))
-    # print(os.getenv("CHROMA_TENANT"))
-    # print(os.getenv("CHROMA_DATABASE"))
     vectorStore = Chroma(
         collection_name=sessionID,
         embedding_function=embedding,
@@ -97,8 +78,6 @@ def MakeItReadyForChat(video_url: str, sessionID: str, dbPath:str):
     )
   
     ids = [f"{sessionID}_{_}" for _ in range(len(texts))]
-
-    #store into the db...
     vectorStore.add_texts(texts=texts, ids=ids)
 
     saveTheVideo(videoID, dbPath, sessionID)
