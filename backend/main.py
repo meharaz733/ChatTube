@@ -44,17 +44,17 @@ async def root():
     return {'message': "Server is running..."}
 
 
+@app.get('/health')
+async def health_check():
+    return {
+        'status': 'Ok',
+    }
+
 
 @app.post('/start', response_model=SessionIDData)
 async def getSessionID(data: startdata):
     """
     Generate a secure random session ID and perform preprocces for chat.
-    
-    Args:
-        video url(str): user input.
-    
-    Returns:
-        str: A secure session ID string.
     """
 
     print(data.video_url)
@@ -71,19 +71,17 @@ async def chat(req_body: UserData):
     Chat endpoint: retrieves context, builds prompt, gets LLM answer, saves chat history.
     """
 
-    db_path = db.get_db_path()
-
-    chat = ChatHistory(req_body.sessionID, dbPath=db_path)
+    chat = ChatHistory(req_body.sessionID, dbPath=db.get_db_path())
 
     #load previous chat...
     userChatHistory = chat.__loadMessage__(50) #last 50 messages
 
     session_id = req_body.sessionID
 
-    existSessionID = isVideoExist(req_body.videoID, dbPath=db_path)
-    
-    if existSessionID: #If session ID is exist that's mean the video transcript is already stored in the vector store, 
-        session_id = existSessionID #use old session id to find existing collection for user query ##collection name set as session ID..
+    #old session ID for existing collection...
+    existSessionID = isVideoExist(req_body.videoID, dbPath=db.get_db_path())
+    if existSessionID:
+        session_id = existSessionID
 
     try:
         vectorStore = Chroma(
