@@ -1,4 +1,4 @@
-"""This method will return a ChatModel."""
+"""Chat model and Chat function."""
 from langchain_huggingface import (
     ChatHuggingFace,
     HuggingFaceEndpoint
